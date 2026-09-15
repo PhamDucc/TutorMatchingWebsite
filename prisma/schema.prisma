@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ ENUM: các giá trị cố định ============
+
+enum Role {
+  STUDENT
+  TUTOR
+  ADMIN
+}
+
+enum TeachingMode {
+  ONLINE
+  OFFLINE
+  BOTH
+}
+
+enum RequestStatus {
+  OPEN
+  CLOSED
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+// ============ BẢNG CHÍNH ============
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  phone        String?
+  role         Role
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Quan hệ 1-1: nếu là gia sư thì có 1 hồ sơ TutorProfile
+  tutorProfile TutorProfile?
+
+  // Quan hệ 1-n: nếu là học sinh thì có thể đăng nhiều yêu cầu
+  studentRequests StudentRequest[]
+
+  // Đánh giá mà user này viết cho người khác
+  reviewsGiven    Review[] @relation("ReviewsGiven")
+  // Đánh giá mà user này nhận được
+  reviewsReceived Review[] @relation("ReviewsReceived")
+
+  // Tin nhắn
+  messagesSent     Message[] @relation("MessagesSent")
+  messagesReceived Message[] @relation("MessagesReceived")
+}
+
+model TutorProfile {
+  id              String       @id @default(cuid())
+  userId          String       @unique
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  subjects        String[]     // ví dụ: ["Toán", "Lý", "Tiếng Anh"]
+  degree          String?      // bằng cấp
+  experienceYears Int          @default(0)
+  pricePerHour    Int          // đơn vị: nghìn VNĐ, hoặc VNĐ tuỳ bạn định nghĩa
+  teachingMode    TeachingMode
+  location        String?      // khu vực dạy (nếu offline)
+  bio             String?      // giới thiệu bản thân
+  certificateUrl  String?      // link file bằng cấp đã upload
+
+  isApproved      Boolean      @default(false) // admin duyệt hồ sơ
+
+  applications    Application[]
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model StudentRequest {
+  id          String         @id @default(cuid())
+  studentId   String
+  student     User           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  subject     String
+  budget      Int
+  schedule    String?        // mô tả lịch rảnh, ví dụ "Tối T2-T4-T6"
+  description String?
+  status      RequestStatus  @default(OPEN)
+
+  applications Application[]
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model Application {
+  id         String            @id @default(cuid())
+
+  tutorId    String
+  tutor      TutorProfile      @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+
+  requestId  String
+  request    StudentRequest    @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  message    String?           // lời nhắn gia sư gửi kèm khi ứng tuyển
+  status     ApplicationStatus @default(PENDING)
+
+  createdAt  DateTime          @default(now())
+
+  @@unique([tutorId, requestId]) // 1 gia sư chỉ ứng tuyển 1 lần cho 1 yêu cầu
+}
+
+model Review {
+  id         String   @id @default(cuid())
+
+  reviewerId String
+  reviewer   User     @relation("ReviewsGiven", fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  targetId   String
+  target     User     @relation("ReviewsReceived", fields: [targetId], references: [id], onDelete: Cascade)
+
+  rating     Int      // 1-5
+  comment    String?
+
+  createdAt  DateTime @default(now())
+}
+
+model Message {
+  id         String   @id @default(cuid())
+
+  senderId   String
+  sender     User     @relation("MessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
+
+  receiverId String
+  receiver   User     @relation("MessagesReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  content    String
+  createdAt  DateTime @default(now())
+}

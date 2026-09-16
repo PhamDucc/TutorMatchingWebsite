@@ -5,6 +5,18 @@
   --foreground: #171717;
 }
 
+@theme {
+  --color-navy-900: #0E2A47;
+  --color-navy-700: #1F4C7A;
+  --color-navy-500: #3B6FA0;
+  --color-sky-100: #EAF1F8;
+  --color-ink: #1A2530;
+  --color-amber-500: #C98A2C;
+
+  --font-display: var(--font-source-serif), Georgia, serif;
+  --font-ui: var(--font-inter), system-ui, sans-serif;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

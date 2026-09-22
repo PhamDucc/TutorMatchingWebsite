@@ -36,10 +36,19 @@ export default async function DashboardPage() {
             ? "Bạn đang đăng nhập với vai trò Học sinh"
             : "Bạn đang đăng nhập với vai trò Gia sư"}
         </p>
-        <div className="text-sm text-ink/50 space-y-1">
+        <div className="text-sm text-ink/50 space-y-1 mb-6">
           <p>Email: {user.email}</p>
           <p>Tham gia từ: {new Date(user.createdAt).toLocaleDateString("vi-VN")}</p>
         </div>
+
+        {user.role === "TUTOR" && (
+          <a
+            href="/dashboard/tutor-profile"
+            className="block w-full text-center bg-navy-900 text-white py-2.5 rounded hover:bg-navy-700 transition-colors font-medium"
+          >
+            Chỉnh sửa hồ sơ gia sư
+          </a>
+        )}
       </div>
     </div>
   );

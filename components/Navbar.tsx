@@ -40,6 +40,14 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           {loading ? null : user ? (
             <>
+              {user.role === "TUTOR" && (
+                <Link
+                  href="/dashboard/tutor-profile"
+                  className="text-sm text-ink hover:text-navy-700"
+                >
+                  Hồ sơ gia sư
+                </Link>
+              )}
               <Link href="/dashboard" className="text-sm text-ink hover:text-navy-700">
                 Xin chào, {user.fullName}
               </Link>

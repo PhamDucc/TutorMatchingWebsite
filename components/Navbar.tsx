@@ -38,6 +38,10 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-4">
+          <Link href="/tutors" className="text-sm text-ink hover:text-navy-700">
+            Tìm gia sư
+          </Link>
+
           {loading ? null : user ? (
             <>
               {user.role === "TUTOR" && (

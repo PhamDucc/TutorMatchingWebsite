@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import FlashlightPasswordInput from "@/components/FlashlightPasswordInput";
 import {
   GraduationCap,
   Ruler,
@@ -13,7 +14,6 @@ import {
   Calculator,
   Award,
   Mail,
-  Lock,
 } from "lucide-react";
 
 export default function LoginPage() {
@@ -128,17 +128,13 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-sm text-ink mb-1.5">Mật khẩu</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink/30" strokeWidth={1.5} />
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="w-full border border-navy-500/30 rounded pl-10 pr-3 py-2.5 text-ink focus:outline-none focus:border-navy-700 focus:ring-1 focus:ring-navy-700 transition-colors"
-                />
-              </div>
+              <FlashlightPasswordInput
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                maxLength={18}
+              />
             </div>
 
             {error && <p className="text-sm text-red-600">{error}</p>}

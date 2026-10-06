@@ -49,6 +49,15 @@ export default async function DashboardPage() {
             Chỉnh sửa hồ sơ gia sư
           </a>
         )}
+
+        {user.role === "STUDENT" && (
+          <a
+            href="/dashboard/student-requests"
+            className="block w-full text-center bg-navy-900 text-white py-2.5 rounded hover:bg-navy-700 transition-colors font-medium"
+          >
+            Đăng yêu cầu tìm gia sư
+          </a>
+        )}
       </div>
     </div>
   );

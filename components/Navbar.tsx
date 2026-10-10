@@ -41,6 +41,9 @@ export default function Navbar() {
           <Link href="/tutors" className="text-sm text-ink hover:text-navy-700">
             Tìm gia sư
           </Link>
+          <Link href="/requests" className="text-sm text-ink hover:text-navy-700">
+            Yêu cầu của học sinh
+          </Link>
 
           {loading ? null : user ? (
             <>
